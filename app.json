@@ -2,15 +2,15 @@
   "expo": {
     "sdkVersion": "22.0.0",
     "orientation": "portrait",
-    "name": "UdaciFlashCards",
-    "description": "The best study helper app.",
-    "slug": "udaciflashcards",
+    "name": "Flashcardmoveis",
+    "description": "Flash Card Moveis.",
+    "slug": "flashcardmoveis",
     "version": "1.0",
     "ios": {
-      "bundleIdentifier": "org.udaciflashcards.fsr"
+      "bundleIdentifier": "br.com.tidea.flashcardmoveis"
     },
     "android": {
-      "package": "org.udaciflashcards.fsr"
+      "package": "br.com.tidea.flashcardmoveis"
     }
   }
 }

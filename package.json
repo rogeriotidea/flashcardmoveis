@@ -1,6 +1,6 @@
 {
-  "name": "UdaciCards",
-  "version": "0.1.0",
+  "name": "Flashcardmoveis",
+  "version": "1.0.0",
   "private": true,
   "devDependencies": {
     "react-native-scripts": "1.7.0",

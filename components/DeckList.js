@@ -1,82 +1,56 @@
 import React, {Component} from 'react'
 import {FlatList, StyleSheet, View} from 'react-native';
+import * as Armazenamento from "../helpers/armazenamento";
 import Deck from "./Deck";
-import {connect} from "react-redux";
-import {getDecks} from "../actions/Deck";
-
 
 class DeckList extends Component {
+
     static navigationOptions = {
-        title: 'Decks',
-        header: null
+        title: 'Decks'
     };
 
     state = {
-        decks: {}
-    };
-    getDeckList = () => {
-        return Object.values(this.state.decks);
+        decks: []
     };
 
-    renderSeparator = () => {
+    componentDidMount() {
+        Armazenamento.getDecks().then((decks) => this.setState({ decks }));
+    }
+
+     renderLineSeparator = () => {
         return (
-            <View
-                style={{
-                    height: 1,
-                    backgroundColor: "#CED0CE",
-                }}
-            />
+            <View style={{ height: 10,  backgroundColor: "#F0F0F0" }} />
         );
     };
 
-    componentDidMount = () => {
-        this.props.getDecks();
-    };
-
-    componentWillReceiveProps(nextProps) {
-        this.setState({
-            decks: nextProps.decks
-        });
-    }
-
-    renderItem = ({item}) => {
-        return <Deck title={item.title} questions={item.questions} id={item.title} navigation={this.props.navigation}/>
+    renderItemDeck = ({item}) => {
+        return <Deck titulo={item.title} perguntas={item.questions} id={item.title} navigation={this.props.navigation}/>
     };
 
     render() {
-        const data = this.getDeckList();
         return (
-            <View style={styles.container}>
-                <FlatList style={styles.list} data={data} renderItem={this.renderItem}
-                          keyExtractor={(item, index) => index} ItemSeparatorComponent={this.renderSeparator}/>
+            <View style={styles.conteudo}>
+                <FlatList style={styles.lista} data={Object.values(this.state.decks)}
+                          renderItem={this.renderItemDeck}
+                          ItemSeparatorComponent={this.renderLineSeparator}
+                          keyExtractor={(item, index) => index} />
             </View>
         )
     }
 }
 
-const mapStateToProps = (state, props) => ({
-    decks: state
-});
 
-const mapDispatchToProps = dispatch => ({
-    getDecks: () => dispatch(getDecks())
-});
-
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(DeckList)
-
+export default DeckList;
 
 const styles = StyleSheet.create({
-    container: {
+    conteudo: {
         flex: 1,
-        alignSelf: 'stretch',
-        backgroundColor: '#fff',
         alignItems: 'center',
+        alignSelf: 'stretch',
+        backgroundColor: '#FFFFFF',
         justifyContent: 'center',
     },
-    list: {
+    lista: {
         flex: 1
     }
 });

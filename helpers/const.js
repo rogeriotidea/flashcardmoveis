@@ -1,0 +1,2 @@
+export const DECKS = "DECKS";
+export const NOTIFICATION_KEY = "UDACITY_FLASHCARDS"

@@ -1,61 +1,60 @@
 import React, {Component} from 'react'
-import {Alert, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
-import {createDeck} from "../actions/Deck";
-import {connect} from "react-redux";
-
+import {TextInput, TouchableOpacity, View, Alert, StyleSheet, Text} from 'react-native';
+import * as Armazenamento from "../helpers/armazenamento";
 
 class NewDeck extends Component {
 
     state = {
-        title: ""
+        titulo: ""
     };
 
     static navigationOptions = {
-        header: null
+        title: 'New Deck'
     };
 
-    onTextInputChange = (text) => {
-        this.setState(state => {
-            return {
-                ...state,
-                title: text
-            }
-        })
-    };
-
-    onSubmit = () => {
-        if (this.state.title === '') {
+    onGravar = () => {
+        if (!this.state.titulo) {
             Alert.alert(
-                'Empty Field',
-                "Title can't be empty",
-                [
-                    {text: 'OK', onPress: () => {}},
-                ],
-                {cancelable: false}
+                "Erro",
+                "Titulo do Deck nao pode ser vazio",
+                [{text: 'OK'}],{cancelable: false}
             )
         } else {
             const {navigate} = this.props.navigation;
-            this.props.addDeck({title: this.state.title}).then(() => {
-                navigate('DeckDetail', {title: this.state.title, questions:[]});
+            Armazenamento.saveDeckTitle({title: this.state.titulo}).then(() => {
+                navigate('DeckDetail', {titulo: this.state.titulo, perguntas:[]});
+                this.setState(state => {
+                    return {
+                        ...state,
+                        titulo: ""
+                    }
+                })
             })
         }
     };
 
+    onChangeTexto = (text) => {
+        this.setState(state => {
+            return {
+                ...state,
+                titulo: text
+            }
+        })
+    };
+
+
     render() {
         return (
-            <View style={styles.container}>
-                <View style={styles.contentContainer}>
-                    <Text style={styles.title}>
-                        What's the title of your new deck?
+            <View style={styles.conteudo}>
+                <View>
+                    <Text style={styles.titulo}>
+                       Qual eh o nome do seu deck?
                     </Text>
-                    <TextInput style={styles.textInput} value={this.state.title} onChangeText={this.onTextInputChange}
-                               placeholder="Enter the title of your new Deck"/>
+                    <TextInput style={styles.TextInput} value={this.state.titulo} onChangeText={this.onChangeTexto} placeholder="Entre o nome do seu deck"/>
                 </View>
                 <View>
-                    <TouchableOpacity style={styles.submitBtn} onPress={this.onSubmit}>
-                        <Text style={styles.submitTxt}>
-                            Submit
-                        </Text>
+                    <TouchableOpacity style={styles.btnGravar} onPress={this.onGravar}>
+                        <Text style={styles.btnTexto}>GRAVAR</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -65,53 +64,44 @@ class NewDeck extends Component {
 }
 
 
-const mapDispatchToProps = dispatch => ({
-    addDeck: ({title}) => dispatch(createDeck({title}))
-});
 
-export default connect(
-    null,
-    mapDispatchToProps
-)(NewDeck)
+export default NewDeck;
 
 
 const styles = StyleSheet.create({
-    container: {
+    conteudo: {
         flex: 1,
         backgroundColor: '#fff',
         alignItems: 'center',
         justifyContent: 'center',
-        borderColor: '#fff',
-        borderTopWidth: 40,
-        borderBottomWidth: 40,
+        borderColor: '#fff'
     },
-    contentContainer: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center'
-    },
-    title: {
-        fontSize: 24,
+    titulo: {
+        fontSize: 34,
         fontWeight: 'bold',
         textAlign: 'center'
     },
-    textInput: {
-        minWidth: '100%',
-        padding: 10,
-        margin: 5
+    TextInput: {
+        minWidth: '90%',
+        padding: 20,
+        margin: 10,
+        textAlign: 'center',
+        borderWidth: 1,
+        borderColor: '#000'
     },
-    submitBtn: {
-        padding: 10,
+    btnGravar: {
+        padding: 20,
         margin: 5,
-        backgroundColor: '#000',
+        backgroundColor: '#F00',
         borderRadius: 10,
         borderWidth: 1,
-        borderColor: '#000',
-        minWidth: '80%'
+        borderColor: '#F00',
+        minWidth: '60%'
     },
-    submitTxt: {
+    btnTexto: {
         fontWeight: 'bold',
         color: '#fff',
-        textAlign: 'center'
+        textAlign: 'center',
+        fontSize: 18
     }
 });

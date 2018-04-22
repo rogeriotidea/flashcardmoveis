@@ -1,74 +1,74 @@
-import {NavigationActions} from 'react-navigation';
 import React, {Component} from 'react'
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-
+import {StyleSheet, TouchableOpacity, Text, View} from 'react-native';
+import {NavigationActions} from 'react-navigation';
 
 class QuizReview extends Component {
-    evaluateScore = (questions) => {
-        let correctQuestions = questions.filter(question => {
-            if ((question.isCorrect && question.optionSelected === 'correct') || (!question.isCorrect && question.optionSelected === 'incorrect'))
-                return true
-        });
+
+    static navigationOptions = ({navigation}) => {
         return {
-            totalQuestions: questions.length,
-            correctQuestions: correctQuestions.length,
-            incorrectQuestions: (questions.length - correctQuestions.length)
+            title: `Resultado Quiz`
         }
     };
 
-    onBackToDecksPress = () => {
-        const resetAction = NavigationActions.reset({
-            index: 0,
-            actions: [
-                NavigationActions.navigate({routeName: 'Decks'})
-            ]
+    state = {
+        perguntas: []
+    };
+
+    componentDidMount() {
+          this.setState({
+               perguntas: this.props.navigation.state.params.perguntas
+          })
+    }
+    scoreTotal = () => {
+
+        let acertos = this.state.perguntas.filter(question => {
+            if ((question.optionSelected === 'correto'))
+                return true
         });
-        this.props.navigation.dispatch(resetAction)
-    };
 
-    onBackToDeckPress = () => {
-        const {params} = this.props.navigation.state;
-        const {navigate} = this.props.navigation;
-        navigate('DeckDetail', {questions: params.questions, title: params.deck});
+        let percAcerto = (acertos.length / this.state.perguntas.length) * 100;
 
-    };
-
-    onRestartPress = () => {
-        const {params} = this.props.navigation.state;
-        const {navigate} = this.props.navigation;
-        navigate('Quiz', {questions: params.questions, deck: params.deck});
+        return {
+            totalPerguntas: this.state.perguntas.length, totalIncorreto: (this.state.perguntas.length - acertos.length), totalCorreto: acertos.length, percAcerto: percAcerto
+        }
     };
 
     render() {
-        const {params} = this.props.navigation.state;
-        const score = this.evaluateScore(params.questions);
+
+        const score = this.scoreTotal();
+
         return (
-            <View style={styles.container}>
-                <View style={styles.contentContainer}>
-                    <Text style={styles.text}>
-                        Total questions: {score.totalQuestions}
+            <View style={styles.conteudo}>
+                <View>
+                    <Text style={styles.texto}>
+                        Total perguntas: {score.totalPerguntas}
                     </Text>
-                    <Text style={styles.text}>
-                        Total correct questions: {score.correctQuestions}
+                    <Text style={styles.texto}>
+                        Total Corretas: {score.totalCorreto}
                     </Text>
-                    <Text style={styles.text}>
-                        Total incorrect questions: {score.incorrectQuestions}
+                    <Text style={styles.texto}>
+                        Total Incorretas: {score.totalIncorreto}
+                    </Text>
+                    <Text style={styles.texto}>
+                        Percuntual Acerto: {score.percAcerto} %
                     </Text>
                 </View>
                 <View>
-                    <TouchableOpacity style={styles.restartBtn} onPress={this.onRestartPress}>
-                        <Text style={styles.restartTxt}>
-                            Restart Quiz
+                    <TouchableOpacity style={styles.btnRestart} onPress={() => {
+                        this.props.navigation.navigate('Quiz', {
+                            title: this.state.titulo,
+                            perguntas: this.state.perguntas,
+                        });
+                    }}>
+                        <Text style={styles.btnRestartTxt}>
+                            Reinicializar o Quiz
                         </Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.homeBtn} onPress={this.onBackToDeckPress}>
-                        <Text style={styles.homeTxt}>
-                            Back to Deck
-                        </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.homeBtn} onPress={this.onBackToDecksPress}>
-                        <Text style={styles.homeTxt}>
-                            Back to Decks
+                    <TouchableOpacity style={styles.btnHome} onPress={() => {
+                        this.props.navigation.navigate('Home');
+                    }}>
+                        <Text style={styles.btnHomeTxt}>
+                            Voltar ao Inicio
                         </Text>
                     </TouchableOpacity>
                 </View>
@@ -80,47 +80,40 @@ class QuizReview extends Component {
 export default QuizReview
 
 const styles = StyleSheet.create({
-    container: {
+    conteudo: {
         flex: 1,
-        backgroundColor: '#fff',
         alignItems: 'center',
         justifyContent: 'center',
-        borderColor: '#fff',
-        borderTopWidth: 40,
-        borderBottomWidth: 40,
-        minWidth: '100%'
-    },
-    contentContainer: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'flex-start'
-    },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold'
-    },
-    text: {
-        fontSize: 14,
-        fontWeight: 'bold'
-    },
-    restartBtn: {
-        padding: 10,
-        margin: 5,
         backgroundColor: '#fff',
+        minWidth: '100%',
+        borderColor: '#fff',
+        borderTopWidth: 35,
+        borderBottomWidth: 35,
+    },
+    texto: {
+        fontSize: 25,
+        fontWeight: 'bold',
+        margin:10
+    },
+    btnRestart: {
+        marginTop:30,
+        padding: 20,
         borderRadius: 10,
         borderWidth: 1,
         borderColor: '#000',
-        minWidth: '80%'
+        minWidth: '80%',
+        marginBottom: 30,
+        backgroundColor: '#0a0'
 
     },
-    restartTxt: {
+    btnRestartTxt: {
         fontWeight: 'bold',
-        color: '#000',
+        color: '#fff',
+        fontSize: 30,
         textAlign: 'center'
     },
-    homeBtn: {
-        padding: 10,
-        margin: 5,
+    btnHome: {
+        padding: 20,
         backgroundColor: '#000',
         borderRadius: 10,
         borderWidth: 1,
@@ -128,8 +121,9 @@ const styles = StyleSheet.create({
         minWidth: '80%'
 
     },
-    homeTxt: {
+    btnHomeTxt: {
         fontWeight: 'bold',
+        fontSize: 30,
         color: '#fff',
         textAlign: 'center'
     }

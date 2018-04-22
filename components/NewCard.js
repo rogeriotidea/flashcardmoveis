@@ -1,150 +1,116 @@
 import React, {Component} from 'react'
-import {Alert, CheckBox, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
-import {connect} from "react-redux";
-import {createCard} from "../actions/Card";
-
+import {Alert, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import * as Armazenamento from "../helpers/armazenamento";
 
 class NewCard extends Component {
 
-
     static navigationOptions = ({navigation}) => {
-        return {
-            title: 'Add Card'
-        }
+        return {title: 'Add Card'}
     };
-
     state = {
-        question: "",
-        answer: "",
         deck: "",
-        isCorrect: false
+        pergunta: "",
+        resposta: ""
     };
 
     componentDidMount = () => {
         const {params} = this.props.navigation.state;
-        this.setState({
-            deck: params.deck
-        })
+        this.setState({ deck: params.title })
     };
 
-    onCheckBoxValueChange = () => {
-        this.setState(state => ({
-            ...state,
-            isCorrect: !state.isCorrect
-        }))
-    };
-
-    onQuestionTextChange = (text) => {
-        this.setState(state => {
-            return {
-                ...state,
-                question: text
-            }
-        })
-    };
-    onAnswerTextChange = (text) => {
-        this.setState(state => {
-            return {
-                ...state,
-                answer: text
-            }
-        })
-    };
-    onSubmit = () => {
-        if (this.state.question === '' || this.state.answer === '') {
+    Gravar = () => {
+        if (!this.state.pergunta || !this.state.resposta) {
             Alert.alert(
-                'Empty Field',
-                "The question or answer can't be empty",
-                [
-                    {text: 'OK', onPress: () => {}},
-                ],
+                "Erro", "Tem que preencher os 2 campos.",
+                [{text: 'OK'}],
                 {cancelable: false}
             )
         } else {
             const {navigate} = this.props.navigation;
-            this.props.addCard({
-                question: this.state.question,
-                answer: this.state.answer,
-                deckId: this.state.deck,
-                isCorrect: this.state.isCorrect
-            }).then(() => {
-                navigate('DeckDetail', {title: this.state.deck});
+
+            Armazenamento.addCardToDeck(
+                {title: this.state.deck},
+                {question: this.state.pergunta},
+                {answer: this.state.resposta}
+            ).then(() => {
+                navigate('DeckDetail', {titulo: this.state.deck });
             })
         }
     };
 
+    trocaTextoPergunta = (text) => {
+        this.setState(state => {
+            return {
+            ...state,
+            pergunta: text }
+        })
+    };
+
+    trocaTextoResposta = (text) => {
+        this.setState(state => {
+            return {
+                ...state,
+                resposta: text
+            }
+        })
+    };
+
     render() {
         return (
-            <View style={styles.container}>
-                <View style={styles.contentContainer}>
-                    <TextInput style={styles.textInput} value={this.state.question}
-                               onChangeText={this.onQuestionTextChange}
-                               placeholder="Enter the question of your new Card"/>
-                    <TextInput style={styles.textInput} value={this.state.answer} onChangeText={this.onAnswerTextChange}
-                               numberOfLines={4} multiline={true} placeholder="Enter the answer of your new Card"/>
-                    <Text>Is correct?</Text>
-                    <CheckBox value={this.state.isCorrect} onChange={this.onCheckBoxValueChange}/>
+            <View style={styles.conteudo}>
+                <View>
+                    <TextInput style={styles.input} value={this.state.pergunta} onChangeText={this.trocaTextoPergunta} placeholder="Informe a pergunta"/>
+                    <TextInput style={styles.input} value={this.state.resposta} onChangeText={this.trocaTextoResposta} numberOfLines={3} placeholder="Entre com a resposta" />
+
                 </View>
                 <View>
-                    <TouchableOpacity style={styles.submitBtn} onPress={this.onSubmit}>
-                        <Text style={styles.submitTxt}>
-                            Submit
-                        </Text>
+                    <TouchableOpacity style={styles.btnGravar} onPress={this.Gravar}><Text style={styles.btnGravarTxt}>GRAVAR</Text>
                     </TouchableOpacity>
                 </View>
             </View>
-
         )
     }
 }
 
-
-const mapDispatchToProps = dispatch => ({
-    addCard: ({question, answer, deckId, isCorrect}) => dispatch(createCard({question, answer, deckId, isCorrect}))
-});
-
-export default connect(
-    null,
-    mapDispatchToProps
-)(NewCard);
-
+export default NewCard;
 
 const styles = StyleSheet.create({
-    container: {
+    conteudo: {
         flex: 1,
+        padding:20,
         backgroundColor: '#fff',
         alignItems: 'center',
         justifyContent: 'center',
-        borderColor: '#fff',
-        borderTopWidth: 40,
-        borderBottomWidth: 40,
+        marginTop: 20,
     },
-    contentContainer: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center'
-    },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold'
-    },
-    textInput: {
-        minWidth: '100%',
-        padding: 10,
-        margin: 5
-    },
-    submitBtn: {
-        padding: 10,
-        margin: 5,
-        backgroundColor: '#000',
-        borderRadius: 10,
+    input: {
+        minWidth: '90%',
+        padding: 20,
+        margin: 10,
+        textAlign: 'center',
         borderWidth: 1,
         borderColor: '#000',
-        minWidth: '80%'
+        fontSize: 18
     },
-    submitTxt: {
+    checkboxInput: {
+        textAlign: 'center',
+        fontSize: 18,
+        margin: 20
+    },
+
+    btnGravar: {
+        padding: 20,
+        margin: 5,
+        backgroundColor: '#F00',
+        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: '#F00',
+        minWidth: '60%'
+    },
+    btnGravarTxt: {
         fontWeight: 'bold',
         color: '#fff',
-        textAlign: 'center'
+        textAlign: 'center',
+        fontSize: 18
     }
 });

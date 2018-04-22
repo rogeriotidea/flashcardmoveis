@@ -1,67 +1,55 @@
-import {StackNavigator, TabNavigator} from 'react-navigation';
 import React, {Component} from 'react'
 import {StyleSheet, View} from 'react-native';
+import {StackNavigator, TabNavigator} from 'react-navigation';
+import NewCard from "./NewCard";
 import DeckList from './DeckList'
 import DeckDetail from "./DeckDetail";
 import NewDeck from "./NewDeck";
-import NewCard from "./NewCard";
-import Card from "./Card";
-import {Constants} from 'expo'
 import QuizReview from "./QuizReview";
+import Quiz from "./Quiz";
+import { FontAwesome, Ionicons } from "@expo/vector-icons";
 
-const Tabs = TabNavigator({
-    Home: {
-        screen: DeckList,
-        navigationOptions: {
-            tabBarLabel: 'Decks',
+const TabNav = TabNavigator({
+        Home: {
+            screen: DeckList,
+            navigationOptions: {
+                tabBarLabel: 'Decks',
+                tabBarIcon: ({ tintColor }) => <Ionicons name="ios-albums" size={30} />
+            },
         },
-    },
-    NewDeck: {
-        screen: NewDeck,
-        navigationOptions: {
-            tabBarLabel: 'New Deck'
-        },
-    }
-}, {
-    /*
-    tabBarOptions:{
-        style:{
-            marginTop:Constants.statusBarHeight
+        NewDeck: {
+            screen: NewDeck,
+            navigationOptions: {
+                tabBarLabel: 'New Deck',
+                tabBarIcon: ({ tintColor }) => <Ionicons name="ios-add" size={30} />
+            },
         }
     }
-    */
-});
+);
 
-const Stack = StackNavigator({
+const StackNav = StackNavigator({
     Decks: {
-        screen: Tabs,
+        screen: TabNav,
     },
     DeckDetail: {
         screen: DeckDetail,
     },
     NewCard: {
         screen: NewCard,
-
     },
     Quiz: {
-        screen: Card,
+        screen: Quiz,
     },
     QuizReview: {
         screen: QuizReview,
     }
-
-}, {
-    cardStyle: {
-        paddingTop: Constants.statusBarHeight
-    }
 });
-
 
 class Home extends Component {
     render() {
         return (
             <View style={styles.container}>
-                <Stack/>
+                <StackNav />
             </View>
         )
     }

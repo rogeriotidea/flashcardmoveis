@@ -1,17 +1,17 @@
 import React, {Component} from 'react'
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import DeckDetail from "./DeckDetail";
-
+import {StyleSheet, Text, View,  TouchableOpacity} from 'react-native';
 
 class Deck extends Component {
+
     render() {
         const {navigate} = this.props.navigation;
         return (
-            <TouchableOpacity
-                onPress={() => navigate('DeckDetail', {title: this.props.title, questions: this.props.questions})}>
-                <View style={styles.container}>
-                    <Text style={styles.title}>{this.props.title}</Text>
-                    <Text>{this.props.questions.length} cards</Text>
+            <TouchableOpacity onPress={() => navigate('DeckDetail',
+                {titulo: this.props.titulo})}>
+                <View style={styles.conteudo}>
+                    <Text style={styles.titulo}>{this.props.titulo}</Text>
+                    <Text style={styles.corFonte}>{this.props.perguntas.length} cards</Text>
                 </View>
             </TouchableOpacity>
         )
@@ -21,18 +21,22 @@ class Deck extends Component {
 export default Deck
 
 const styles = StyleSheet.create({
-    container: {
+    titulo: {
+        fontSize: 30,
+        fontWeight: 'bold'
+    },
+    corFonte: {
+        color: 'blue',
+        fontSize: 11
+    },
+    conteudo: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: '#FFFFFF',
         alignItems: 'center',
         justifyContent: 'center',
         borderColor: '#fff',
-        borderTopWidth: 40,
-        borderBottomWidth: 40,
+        borderTopWidth: 20,
+        marginBottom:20,
         minWidth: '100%'
     },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold'
-    }
 });

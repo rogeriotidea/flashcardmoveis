@@ -1,54 +1,53 @@
-import { Notifications, Permissions } from 'expo'
-import {NOTIFICATION_KEY} from "./constants";
 import {AsyncStorage} from 'react-native'
+import {Permissions, Notifications} from 'expo'
 
-function createNotification () {
+export const NOTIFICATION_KEY = "UDACITY_FLASHCARDS"
+
+function criarNotificacao () {
     return {
-        title: 'Study today!',
-        body: "You must take at least one quiz per day!",
+        title: 'Estude hoje !',
+        body: "Voce precisa ao menos reponder a um quiz hoje !",
         ios: {
             sound: true,
         },
         android: {
             sound: true,
-            priority: 'high',
             sticky: false,
             vibrate: true,
+            priority: 'high',
         }
     }
 }
 
-export function setLocalNotification () {
+export function setarNotificacao () {
+
     AsyncStorage.getItem(NOTIFICATION_KEY)
         .then(JSON.parse)
         .then((data) => {
-            if (data === null) {
-                Permissions.askAsync(Permissions.NOTIFICATIONS)
-                    .then(({ status }) => {
-                        if (status === 'granted') {
+          if (data === null) {
+            Permissions.askAsync(Permissions.NOTIFICATIONS)
+              .then(({ status }) => {
+                   if (status === 'granted') {
                             Notifications.cancelAllScheduledNotificationsAsync();
                             let tomorrow = new Date();
                             tomorrow.setDate(tomorrow.getDate() + 1);
-                            tomorrow.setHours(12);
+                            tomorrow.setHours(20);
                             tomorrow.setMinutes(0);
                             Notifications.scheduleLocalNotificationAsync(
-                                createNotification(),
+                                criarNotificacao(),
                                 {
                                     time: tomorrow,
                                     repeat: 'day',
                                 }
                             );
                             AsyncStorage.setItem(NOTIFICATION_KEY, JSON.stringify(true))
-                        }
-                    })
+                   }
+               })
             }
         })
 }
 
-export function clearLocalNotification () {
+export function limparNotificacoes () {
     return AsyncStorage.removeItem(NOTIFICATION_KEY)
         .then(Notifications.cancelAllScheduledNotificationsAsync)
 }
-
-
-// The code snippets from the functions above were obtained from udacity/reactnd-UdaciFitness-complete Github repo.
