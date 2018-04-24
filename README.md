@@ -10,7 +10,7 @@ Este projeto utiliezi o ```create-react-native-app```. Foi testado no emulador d
 * iOS
 * Android
 
-## Como Usar ##
+## Como Instalar ##
 
 É preciso ter o expo instalado.
 
@@ -18,4 +18,3 @@ Este projeto utiliezi o ```create-react-native-app```. Foi testado no emulador d
 
 ```npm start``` 
 
-Este projeto foi criado a partir com Create React Native App.
