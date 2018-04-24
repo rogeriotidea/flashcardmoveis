@@ -1,8 +1,8 @@
-import React, {Component} from 'react'
+import React, {PureComponent} from 'react'
 import FlipCard from "react-native-flip-card";
 import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 
-class Quiz extends Component {
+class Quiz extends PureComponent {
 
     static navigationOptions = ({navigation}) => {
         return {
@@ -21,7 +21,6 @@ class Quiz extends Component {
     componentDidMount() {
         const {params} = this.props.navigation.state;
         this.setState((prevState) => ({
-            ...prevState,
             perguntas: params.perguntas,
             deck: params.titulo
         }));

@@ -3,7 +3,7 @@ import {Permissions, Notifications} from 'expo'
 
 export const NOTIFICATION_KEY = "UDACITY_FLASHCARDS"
 
-function criarNotificacao () {
+let criarNotificacao = function () {
     return {
         title: 'Estude hoje !',
         body: "Voce precisa ao menos reponder a um quiz hoje !",
@@ -45,7 +45,7 @@ export function setarNotificacao () {
                })
             }
         })
-}
+} 
 
 export function limparNotificacoes () {
     return AsyncStorage.removeItem(NOTIFICATION_KEY)
